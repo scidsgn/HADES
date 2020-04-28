@@ -17,8 +17,8 @@ Func _HADES_CreateCoordinateSystem()
 EndFunc
 
 Func __HCS_LocalToWorld($oSelf, $aCoords)
-	Local $iX = ($aCoords[0] - $oSelf.originX) / $oSelf.scaleFactor + $oSelf.originX
-	Local $iY = ($aCoords[1] - $oSelf.originY) / $oSelf.scaleFactor + $oSelf.originY
+	Local $iX = ($aCoords[0] - $oSelf.originX) / $oSelf.scaleFactor
+	Local $iY = ($aCoords[1] - $oSelf.originY) / $oSelf.scaleFactor
 
 	Local $aOut = [$iX, $iY]
 
@@ -26,8 +26,8 @@ Func __HCS_LocalToWorld($oSelf, $aCoords)
 EndFunc
 
 Func __HCS_WorldToLocal($oSelf, $aCoords)
-	Local $iX = ($aCoords[0] - $oSelf.originX) * $oSelf.scaleFactor + $oSelf.originX
-	Local $iY = ($aCoords[1] - $oSelf.originY) * $oSelf.scaleFactor + $oSelf.originY
+	Local $iX = $aCoords[0] * $oSelf.scaleFactor + $oSelf.originX
+	Local $iY = $aCoords[1] * $oSelf.scaleFactor + $oSelf.originY
 
 	Local $aOut = [$iX, $iY]
 
@@ -35,12 +35,17 @@ Func __HCS_WorldToLocal($oSelf, $aCoords)
 EndFunc
 
 Func __HCS_Translate($oSelf, $dX, $dY)
-	$oSelf.originX += $dX / $oSelf.scaleFactor
-	$oSelf.originY += $dY / $oSelf.scaleFactor
+	$oSelf.originX += $dX
+	$oSelf.originY += $dY
 EndFunc
 
 Func __HCS_Scale($oSelf, $iX, $iY, $fScale)
-	$oSelf.originX = ($oSelf.originX - $iX) * $fScale + $iX
-	$oSelf.originY = ($oSelf.originY - $iY) * $fScale + $iY
-	$oSelf.scaleFactor *= $fScale
+	Local $fNewScale = $fScale * $oSelf.scaleFactor
+
+	Local $originX = $oSelf.originX + $oSelf.scaleFactor * $iX - $fNewScale * $iX
+	Local $originY = $oSelf.originY + $oSelf.scaleFactor * $iY - $fNewScale * $iY
+
+	$oSelf.originX = $originX
+	$oSelf.originY = $originY
+	$oSelf.scaleFactor = $fNewScale
 EndFunc
