@@ -13,5 +13,9 @@ Func _HADES_Exit()
 		Call($fnFunc)
 	Next
 
+	Local $oCtx = _HADES_GetCurrentContext()
+	If IsObj($oCtx) Then _HADES_DestroyContext($oCtx)
+
+	_GDIPlus_Shutdown()
 	_AutoItObject_Shutdown()
 EndFunc

@@ -26,6 +26,10 @@ Func _HADES_AfDesignLocate()
 	Return False
 EndFunc
 
+Func _HADES_GetAfDesignCanvas()
+	Return $__g_HADES_AfDesignCanvasHWND
+EndFunc
+
 Func _HADES_GetAfDesignCanvasAtXY()
 	Local $aPos = MouseGetPos()
 	; Slightly offset - a hack to make sure AfDesign's default ctx menu isn't caught

@@ -42,7 +42,9 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 ;~ 		Return _WinAPI_CallNextHookEx($__g_HADES_Hook, $nCode, $wParam, $lParam)
 ;~ 	EndIf
 	Local $hCanvasWnd = _HADES_GetAfDesignCanvasAtXY()
-			Local $oContext = _HADES_GetCurrentContext()
+	Local $oContext = _HADES_GetCurrentContext()
+
+	Local $bLetToolHandle = True
 
 	Switch $iMsg
 		Case $WM_MOUSEWHEEL
@@ -62,6 +64,10 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 				Else
 					$oCoords.translate(0, 30 * $iDirection)
 				EndIf
+
+				$oContext.tool.update($oContext)
+				_HADES_UpdateViewportGUI($oContext.viewport)
+				$bLetToolHandle = False
 			EndIf
 		Case $WM_MOUSEMOVE
 			If $hCanvasWnd And IsObj($oContext) Then
@@ -70,18 +76,23 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 				If _IsPressed("04") Then
 					Local $aMove = _HADES_GetMouseMove()
 					$oCoords.translate($aMove[0], $aMove[1])
+
+					$oContext.tool.update($oContext)
+					_HADES_UpdateViewportGUI($oContext.viewport)
+					$bLetToolHandle = False
 				Else
 					; ..
 				EndIf
 			EndIf
 	EndSwitch
 
-	If $hCanvasWnd And IsObj($oContext) Then
+	If $hCanvasWnd And IsObj($oContext) And $bLetToolHandle Then
 		Local $oCoords = $oContext.coords
-		Local $aCoords = [400, 300]
-		$aCoords = _HADES_GetScreenCoords($hCanvasWnd, $oCoords.worldToLocal($aCoords))
+		Local $aCoords = _HADES_GetLocalCoords($hCanvasWnd)
+		Local $aWorldCoords = $oContext.coords.localToWorld($aCoords)
 
-		WinMove($__g_HADES_MenuOwnerHWND, "", $aCoords[0], $aCoords[1])
+		$oContext.tool.interact($oContext, $iMsg, $aCoords[0], $aCoords[1], $aWorldCoords[0], $aWorldCoords[1])
+		_HADES_UpdateViewportGUI($oContext.viewport)
 	EndIf
 
 	_HADES_UpdateMousePos()

@@ -6,11 +6,16 @@
 #ce
 
 #include "Lib\AutoItObject.au3"
+#include "Lib\oLinkedList.au3"
+
+#include <GDIPlus.au3>
 
 #include "Code\Cleanup.au3"
 #include "Code\Hook.au3"
 #include "Code\Affinity.au3"
 #include "Code\Context.au3"
+#include "Code\ViewportOverlay.au3"
+#include "Code\Tools.au3"
 #include "Code\Menu.au3"
 
 _HADES_Startup()
@@ -19,9 +24,11 @@ Func _HADES_Startup()
 	OnAutoItExitRegister(_HADES_Exit)
 
 	_AutoItObject_Startup(True, @ScriptDir & "\Lib\AutoItObject_x64.dll")
-	_HADES_RegisterHook()
-	_HADES_SetCurrentContext(_HADES_CreateContext())
+	_GDIPlus_Startup()
 
+	_HADES_RegisterHook()
+
+	_HADES_SetupToolGroups()
 	_HADES_CreateMenu()
 
 	HotKeySet("^h", _HADES_ShowMenu)
