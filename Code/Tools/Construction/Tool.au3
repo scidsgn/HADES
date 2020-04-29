@@ -3,7 +3,7 @@
 Func _HADES_Construction_SetupTools()
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("nothing"))
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("clear", "_HADES_Construction_Clear_Interact"))
-	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("movepoint"))
+	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("movepoint", "_HADES_Construction_MovePoint_Interact"))
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("addpoint", "_HADES_Construction_AddPoint_Interact"))
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("circdiam", "_HADES_Construction_CircDiam_Interact"))
 EndFunc
@@ -27,6 +27,38 @@ Func _HADES_Construction_Clear_Interact($oTool, $oEnviron, $iMsg, $iClientX, $iC
 		$oEnviron.shapes = LinkedList()
 		$oEnviron.points = LinkedList()
 	EndIf
+EndFunc
+
+Func _HADES_Construction_MovePoint_Interact($oTool, $oEnviron, $iMsg, $iClientX, $iClientY, $iWorldX, $iWorldY)
+	Static Local $iLastWorldX = $iWorldX, $iLastWorldY = $iWorldY
+
+	If $iMsg = $WM_LBUTTONDOWN Then
+		Local $oPoint = $oEnviron.getNearPoint($iClientX, $iClientY)
+		If IsObj($oPoint) Then
+			$oEnviron.toolPoints.add($oPoint)
+			$oEnviron.context.viewport.setLock(True)
+		EndIf
+	ElseIf $iMsg = $WM_MOUSEMOVE Then
+		If $oEnviron.toolPoints.count() = 1 Then
+			Local $oPoint = $oEnviron.toolPoints.at(0)
+
+			$oPoint.x += $iWorldX - $iLastWorldX
+			$oPoint.y += $iWorldY - $iLastWorldY
+		EndIf
+	ElseIf $iMsg = $WM_LBUTTONUP Then
+		If $oEnviron.toolPoints.count() = 1 Then
+			Local $oPoint = $oEnviron.toolPoints.at(0)
+
+			$oPoint.x += $iWorldX - $iLastWorldX
+			$oPoint.y += $iWorldY - $iLastWorldY
+		EndIf
+
+		$oEnviron.toolPoints = LinkedList()
+		$oEnviron.context.viewport.setLock(False)
+	EndIf
+
+	$iLastWorldX = $iWorldX
+	$iLastWorldY = $iWorldY
 EndFunc
 
 Func _HADES_Construction_AddPoint_Interact($oTool, $oEnviron, $iMsg, $iClientX, $iClientY, $iWorldX, $iWorldY)
