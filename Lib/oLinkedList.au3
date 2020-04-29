@@ -26,11 +26,19 @@ Func LinkedList()
 	$oClassObj.AddMethod("add", "_LinkedList_add")
 	$oClassObj.AddMethod("at", "_LinkedList_at")
 	$oClassObj.AddMethod("remove", "_LinkedList_remove")
+	$oClassObj.AddMethod("includes", "_LinkedList_includes")
     ; Enum
 	$oClassObj.AddEnum("_LinkedList_Enumnext", "_LinkedList_EnumReset")
     ; Return created object
 	Return $oClassObj.Object
 EndFunc   ;==>LinkedList
+
+Func _LinkedList_includes($self, $v)
+	For $item In $self
+		If $v = $item Then Return True
+	Next
+	Return False
+EndFunc
 
 Func _LinkedList_remove($self, $index)
 	If $self.size = 0 Then Return SetError(1, 0, 0)

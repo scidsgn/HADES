@@ -17,6 +17,9 @@
 #include "Code\ViewportOverlay.au3"
 #include "Code\Tools.au3"
 #include "Code\Menu.au3"
+#include "Code\Utilities.au3"
+
+Global Const $HADES_VERSION = "0.1"
 
 _HADES_Startup()
 
@@ -31,7 +34,7 @@ Func _HADES_Startup()
 	_HADES_SetupToolGroups()
 	_HADES_CreateMenu()
 
-	HotKeySet("^h", _HADES_ShowMenu)
+	HotKeySet("^q", _HADES_ShowMenu)
 
 	While 1
 		_HADES_AfDesignLocate()

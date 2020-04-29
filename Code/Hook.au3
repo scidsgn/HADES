@@ -44,6 +44,10 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 	Local $hCanvasWnd = _HADES_GetAfDesignCanvasAtXY()
 	Local $oContext = _HADES_GetCurrentContext()
 
+	If IsObj($oContext) And $oContext.viewport.locked Then
+		$hCanvasWnd = HWnd($oContext.viewport.viewportWnd)
+	EndIf
+
 	Local $bLetToolHandle = True
 
 	Switch $iMsg
@@ -52,12 +56,12 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 			; -1 - down
 			Local $iDirection = _WinAPI_HiWord($tMouseData.mouseData) / 120
 
-			If $hCanvasWnd And IsObj($oContext) Then
+			If $hCanvasWnd And IsObj($oContext) And Not $oContext.viewport.locked Then
 				Local $oCoords = $oContext.coords
 				Local $aCoords = _HADES_GetLocalCoords($hCanvasWnd)
 				Local $aAfCoords = $oCoords.localToWorld($aCoords)
 
-				If _IsPressed("11") Then
+				If _IsPressed("11") Or _IsPressed("04") Then
 					$oCoords.scale($aAfCoords[0], $aAfCoords[1], 1.25^$iDirection)
 				ElseIf _IsPressed("10") Then
 					$oCoords.translate(30 * $iDirection, 0)
@@ -66,11 +70,11 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 				EndIf
 
 				$oContext.tool.update($oContext)
-				_HADES_UpdateViewportGUI($oContext.viewport)
+				$oContext.viewport.updateUI()
 				$bLetToolHandle = False
 			EndIf
 		Case $WM_MOUSEMOVE
-			If $hCanvasWnd And IsObj($oContext) Then
+			If $hCanvasWnd And IsObj($oContext) And Not $oContext.viewport.locked Then
 				Local $oCoords = $oContext.coords
 
 				If _IsPressed("04") Then
@@ -78,10 +82,8 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 					$oCoords.translate($aMove[0], $aMove[1])
 
 					$oContext.tool.update($oContext)
-					_HADES_UpdateViewportGUI($oContext.viewport)
+					$oContext.viewport.updateUI()
 					$bLetToolHandle = False
-				Else
-					; ..
 				EndIf
 			EndIf
 	EndSwitch
@@ -92,7 +94,7 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 		Local $aWorldCoords = $oContext.coords.localToWorld($aCoords)
 
 		$oContext.tool.interact($oContext, $iMsg, $aCoords[0], $aCoords[1], $aWorldCoords[0], $aWorldCoords[1])
-		_HADES_UpdateViewportGUI($oContext.viewport)
+		$oContext.viewport.updateUI()
 	EndIf
 
 	_HADES_UpdateMousePos()

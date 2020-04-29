@@ -14,7 +14,21 @@ Func _HADES_CreateViewport($oCtx)
 
 	_AutoItObject_AddProperty($oObj, "viewportWnd", $ELSCOPE_PUBLIC, _HADES_CreateViewportGUI($oObj))
 
+	_AutoItObject_AddProperty($oObj, "locked", $ELSCOPE_PUBLIC, False)
+	_AutoItObject_AddMethod($oObj, "setLock", "_HADES_SetViewportLock")
+
+	_AutoItObject_AddMethod($oObj, "updateUI", "_HADES_UpdateViewportGUI")
+
 	Return $oObj
+EndFunc
+
+Func _HADES_SetViewportLock($oVp, $bLock)
+	Local $iExStyle = $WS_EX_LAYERED
+	If Not $bLock Then $iExStyle += $WS_EX_TRANSPARENT
+
+	$oVp.locked = $bLock
+
+	GUISetStyle(Default, $iExStyle, HWnd($oVp.viewportWnd))
 EndFunc
 
 Func _HADES_CreateViewportGUI($oVp)
@@ -26,6 +40,7 @@ Func _HADES_CreateViewportGUI($oVp)
 	$oVp.bitmap = Int(_GDIPlus_BitmapCreateFromScan0($aPos[2], $aPos[3]))
 	$oVp.graphics = Int(_GDIPlus_ImageGetGraphicsContext($oVp.bitmap))
 	_GDIPlus_GraphicsSetSmoothingMode($oVp.graphics, 2)
+	_GDIPlus_GraphicsSetPixelOffsetMode($oVp.graphics, 1)
 
 	Return Int($hWnd)
 EndFunc
