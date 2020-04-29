@@ -43,6 +43,7 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 ;~ 	EndIf
 	Local $hCanvasWnd = _HADES_GetAfDesignCanvasAtXY()
 	Local $oContext = _HADES_GetCurrentContext()
+	Local $oCoords = _HADES_GetCoordinateSystem()
 
 	If IsObj($oContext) And $oContext.viewport.locked Then
 		$hCanvasWnd = HWnd($oContext.viewport.viewportWnd)
@@ -56,8 +57,7 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 			; -1 - down
 			Local $iDirection = _WinAPI_HiWord($tMouseData.mouseData) / 120
 
-			If $hCanvasWnd And IsObj($oContext) And Not $oContext.viewport.locked Then
-				Local $oCoords = $oContext.coords
+			If $hCanvasWnd And IsObj($oCoords) And Not $oCoords.locked Then
 				Local $aCoords = _HADES_GetLocalCoords($hCanvasWnd)
 				Local $aAfCoords = $oCoords.localToWorld($aCoords)
 
@@ -69,27 +69,29 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 					$oCoords.translate(0, 30 * $iDirection)
 				EndIf
 
-				$oContext.tool.update($oContext)
-				$oContext.viewport.updateUI()
-				$bLetToolHandle = False
-			EndIf
-		Case $WM_MOUSEMOVE
-			If $hCanvasWnd And IsObj($oContext) And Not $oContext.viewport.locked Then
-				Local $oCoords = $oContext.coords
-
-				If _IsPressed("04") Then
-					Local $aMove = _HADES_GetMouseMove()
-					$oCoords.translate($aMove[0], $aMove[1])
-
+				If IsObj($oContext) Then
 					$oContext.tool.update($oContext)
 					$oContext.viewport.updateUI()
 					$bLetToolHandle = False
 				EndIf
 			EndIf
+		Case $WM_MOUSEMOVE
+			If $hCanvasWnd And IsObj($oCoords) And Not $oCoords.locked Then
+				If _IsPressed("04") Then
+					Local $aMove = _HADES_GetMouseMove()
+					$oCoords.translate($aMove[0], $aMove[1])
+
+
+					If IsObj($oContext) Then
+						$oContext.tool.update($oContext)
+						$oContext.viewport.updateUI()
+						$bLetToolHandle = False
+					EndIf
+				EndIf
+			EndIf
 	EndSwitch
 
 	If $hCanvasWnd And IsObj($oContext) And $bLetToolHandle Then
-		Local $oCoords = $oContext.coords
 		Local $aCoords = _HADES_GetLocalCoords($hCanvasWnd)
 		Local $aWorldCoords = $oContext.coords.localToWorld($aCoords)
 

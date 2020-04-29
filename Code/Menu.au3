@@ -4,6 +4,7 @@
 #include <GUIConstants.au3>
 
 Global $__g_HADES_Menu
+Global $__g_HADES_CoordsSubMenu
 Global $__g_HADES_AppSubMenu
 Global $__g_HADES_MenuOwnerHWND
 Global $__g_HADES_MenuStopToolID
@@ -22,6 +23,18 @@ Func _HADES_CreateMenu()
 
 	$__g_HADES_MenuStopToolID = _GUICtrlMenu_AddMenuItem($__g_HADES_Menu, "Stop current HADES tool", $HADES_MID_STOPTOOL)
 	_GUICtrlMenu_SetItemBmp($__g_HADES_Menu, $__g_HADES_MenuStopToolID, _HADES_LoadMenuBitmap("stopcurrent"))
+
+	Local $idCoordsSubmenu = _GUICtrlMenu_AddMenuItem($__g_HADES_Menu, "Coordinate space")
+	_GUICtrlMenu_SetItemBmp($__g_HADES_Menu, $idCoordsSubmenu, _HADES_LoadMenuBitmap("coords"))
+	$__g_HADES_CoordsSubMenu = _GUICtrlMenu_CreateMenu()
+
+	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_CoordsSubMenu, "Freeze")
+	_GUICtrlMenu_SetItemBmp($__g_HADES_CoordsSubMenu, $idItem, _HADES_LoadMenuBitmap("freezexy"))
+
+	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_CoordsSubMenu, "Reposition coordinates")
+	_GUICtrlMenu_SetItemBmp($__g_HADES_CoordsSubMenu, $idItem, _HADES_LoadMenuBitmap("resetxy"))
+
+	_GUICtrlMenu_SetItemSubMenu($__g_HADES_Menu, $idCoordsSubmenu, $__g_HADES_CoordsSubMenu)
 
 	_GUICtrlMenu_AddMenuItem($__g_HADES_Menu, "")
 
@@ -140,6 +153,8 @@ Func _HADES_DestroyMenu()
 		_WinAPI_DeleteObject($hBmp)
 	Next
 
+	_GUICtrlMenu_DestroyMenu($__g_HADES_CoordsSubMenu)
+	_GUICtrlMenu_DestroyMenu($__g_HADES_AppSubMenu)
 	_GUICtrlMenu_DestroyMenu($__g_HADES_Menu)
 	GUIDelete($__g_HADES_MenuOwnerHWND)
 EndFunc

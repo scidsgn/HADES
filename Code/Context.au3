@@ -16,7 +16,7 @@ EndFunc
 Func _HADES_CreateContext($oTool)
 	Local $oCtx = _AutoItObject_Create()
 
-	_AutoItObject_AddProperty($oCtx, "coords", $ELSCOPE_PUBLIC, _HADES_CreateCoordinateSystem($oCtx))
+	_AutoItObject_AddProperty($oCtx, "coords", $ELSCOPE_PUBLIC, _HADES_GetCoordinateSystem())
 	_AutoItObject_AddProperty($oCtx, "viewport", $ELSCOPE_PUBLIC, _HADES_CreateViewport($oCtx))
 
 	_AutoItObject_AddProperty($oCtx, "data", $ELSCOPE_PUBLIC, 0)

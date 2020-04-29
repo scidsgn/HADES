@@ -19,7 +19,7 @@
 #include "Code\Menu.au3"
 #include "Code\Utilities.au3"
 
-Global Const $HADES_VERSION = "0.1"
+Global Const $HADES_VERSION = "Alpha 0.1"
 
 _HADES_Startup()
 
@@ -29,6 +29,7 @@ Func _HADES_Startup()
 	_AutoItObject_Startup(True, @ScriptDir & "\Lib\AutoItObject_x64.dll")
 	_GDIPlus_Startup()
 
+	_HADES_CreateCoordinateSystem()
 	_HADES_RegisterHook()
 
 	_HADES_SetupToolGroups()

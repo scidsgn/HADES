@@ -2,10 +2,16 @@
 
 #include <Math.au3>
 
-Func _HADES_CreateCoordinateSystem($oCtx)
+Global $__g_HADES_CoordinateSystem = Null
+
+Func _HADES_GetCoordinateSystem()
+	Return $__g_HADES_CoordinateSystem
+EndFunc
+
+Func _HADES_CreateCoordinateSystem()
 	Local $oObj = _AutoItObject_Create()
 
-	_AutoItObject_AddProperty($oObj, "context", $ELSCOPE_PUBLIC, $oCtx)
+;~ 	_AutoItObject_AddProperty($oObj, "context", $ELSCOPE_PUBLIC, $oCtx)
 
 	_AutoItObject_AddProperty($oObj, "locked", $ELSCOPE_PUBLIC, False)
 
@@ -19,90 +25,92 @@ Func _HADES_CreateCoordinateSystem($oCtx)
 	_AutoItObject_AddMethod($oObj, "translate", "__HCS_Translate")
 	_AutoItObject_AddMethod($oObj, "scale", "__HCS_Scale")
 
-	_AutoItObject_AddMethod($oObj, "forceContainRect", "__HCS_ForceContainRect")
+;~ 	_AutoItObject_AddMethod($oObj, "forceContainRect", "__HCS_ForceContainRect")
+
+	$__g_HADES_CoordinateSystem = $oObj
 
 	Return $oObj
 EndFunc
 
-Func __HCS_ForceContainRect($oCoords, $iX, $iY, $iWidth, $iHeight)
-	Local $aVpPos = WinGetPos(HWnd($oCoords.context.viewport.canvasWnd))
+;~ Func __HCS_ForceContainRect($oCoords, $iX, $iY, $iWidth, $iHeight)
+;~ 	Local $aVpPos = WinGetPos(HWnd($oCoords.context.viewport.canvasWnd))
 
-	Local $aMousePos = MouseGetPos()
+;~ 	Local $aMousePos = MouseGetPos()
 
-	Local $aXY = [$iX, $iY]
-	Local $fScale = $oCoords.scaleFactor
-	$aXY = $oCoords.worldToLocal($aXY)
+;~ 	Local $aXY = [$iX, $iY]
+;~ 	Local $fScale = $oCoords.scaleFactor
+;~ 	$aXY = $oCoords.worldToLocal($aXY)
 
-	$iWidth *= $fScale
-	$iHeight *= $fScale
+;~ 	$iWidth *= $fScale
+;~ 	$iHeight *= $fScale
 
-	If $iWidth > $aVpPos[2] Or $iHeight > $aVpPos[3] Then
-		Local $fWRatio = $iWidth / $aVpPos[2]
-		Local $fHRatio = $iHeight / $aVpPos[3]
+;~ 	If $iWidth > $aVpPos[2] Or $iHeight > $aVpPos[3] Then
+;~ 		Local $fWRatio = $iWidth / $aVpPos[2]
+;~ 		Local $fHRatio = $iHeight / $aVpPos[3]
 
-		Local $fRatio = _Max($fWRatio, $fHRatio)
-		Local $fTicks = Ceiling(Log($fRatio) / Log(1.25))
+;~ 		Local $fRatio = _Max($fWRatio, $fHRatio)
+;~ 		Local $fTicks = Ceiling(Log($fRatio) / Log(1.25))
 
-		$aMousePos[0] -= $aVpPos[0]
-		$aMousePos[1] -= $aVpPos[1]
-		$aMousePos = $oCoords.localToWorld($aMousePos)
+;~ 		$aMousePos[0] -= $aVpPos[0]
+;~ 		$aMousePos[1] -= $aVpPos[1]
+;~ 		$aMousePos = $oCoords.localToWorld($aMousePos)
 
-		$oCoords.locked = True
-		MouseDown("middle")
-		MouseWheel("down", $fTicks)
-		MouseUp("middle")
-		$oCoords.locked = False
+;~ 		$oCoords.locked = True
+;~ 		MouseDown("middle")
+;~ 		MouseWheel("down", $fTicks)
+;~ 		MouseUp("middle")
+;~ 		$oCoords.locked = False
 
-		$oCoords.scale($aMousePos[0], $aMousePos[1], 0.8^$fTicks)
+;~ 		$oCoords.scale($aMousePos[0], $aMousePos[1], 0.8^$fTicks)
 
-		$iWidth *= 0.8^$fTicks
-		$iHeight *= 0.8^$fTicks
-	EndIf
+;~ 		$iWidth *= 0.8^$fTicks
+;~ 		$iHeight *= 0.8^$fTicks
+;~ 	EndIf
 
-	Local $dX = 0, $dY = 0
-	Local $bRequiresReadjustment = False
+;~ 	Local $dX = 0, $dY = 0
+;~ 	Local $bRequiresReadjustment = False
 
-	If $aXY[0] < 0 Then
-		$dX = -$aXY[0] + 4
-	ElseIf $aXY[0] + $iWidth >= $aVpPos[2] Then
-		$dX =  $aVpPos[2] - ($aXY[0] + $iWidth) - 4
-	EndIf
+;~ 	If $aXY[0] < 0 Then
+;~ 		$dX = -$aXY[0] + 4
+;~ 	ElseIf $aXY[0] + $iWidth >= $aVpPos[2] Then
+;~ 		$dX =  $aVpPos[2] - ($aXY[0] + $iWidth) - 4
+;~ 	EndIf
 
-	If $aXY[1] < 0 Then
-		$dY = -$aXY[0] + 4
-	ElseIf $aXY[1] + $iHeight >= $aVpPos[3] Then
-		$dY =  $aVpPos[3] - ($aXY[1] + $iHeight) - 4
-	EndIf
+;~ 	If $aXY[1] < 0 Then
+;~ 		$dY = -$aXY[0] + 4
+;~ 	ElseIf $aXY[1] + $iHeight >= $aVpPos[3] Then
+;~ 		$dY =  $aVpPos[3] - ($aXY[1] + $iHeight) - 4
+;~ 	EndIf
 
-	If $dX = 0 And $dY = 0 Then Return
-	If Abs($dX) > $aVpPos[2] Or Abs($dY) > $aVpPos[3] Then
-		Local $fRatio = 1
+;~ 	If $dX = 0 And $dY = 0 Then Return
+;~ 	If Abs($dX) > $aVpPos[2] Or Abs($dY) > $aVpPos[3] Then
+;~ 		Local $fRatio = 1
 
-		If _Max(Abs($dX), Abs($dY)) = $dX Then
-			$fRatio = $aVpPos[2] / Abs($dX)
-		Else
-			$fRatio = $aVpPos[3] / Abs($dY)
-		EndIf
+;~ 		If _Max(Abs($dX), Abs($dY)) = $dX Then
+;~ 			$fRatio = $aVpPos[2] / Abs($dX)
+;~ 		Else
+;~ 			$fRatio = $aVpPos[3] / Abs($dY)
+;~ 		EndIf
 
-		$dX /= $fRatio
-		$dY /= $fRatio
+;~ 		$dX /= $fRatio
+;~ 		$dY /= $fRatio
 
-		$bRequiresReadjustment = True
-	EndIf
+;~ 		$bRequiresReadjustment = True
+;~ 	EndIf
 
-	Local $iDragStartX = ($dX < 0) ? -$dX : 0
-	Local $iDragStartY = ($dY < 0) ? -$dY : 0
+;~ 	Local $iDragStartX = ($dX < 0) ? -$dX : 0
+;~ 	Local $iDragStartY = ($dY < 0) ? -$dY : 0
 
-	$oCoords.locked = True
-	MouseClickDrag("middle", $aVpPos[0] + $iDragStartX, $aVpPos[1] + $iDragStartY, $aVpPos[0] + $iDragStartX + $dX, $aVpPos[1] + $iDragStartY + $dY, 1)
-	$oCoords.locked = False
+;~ 	$oCoords.locked = True
+;~ 	MouseClickDrag("middle", $aVpPos[0] + $iDragStartX, $aVpPos[1] + $iDragStartY, $aVpPos[0] + $iDragStartX + $dX, $aVpPos[1] + $iDragStartY + $dY, 1)
+;~ 	$oCoords.locked = False
 
-	$oCoords.translate($dX, $dY)
+;~ 	$oCoords.translate($dX, $dY)
 
-	MouseMove($aMousePos[0], $aMousePos[1], 0)
+;~ 	MouseMove($aMousePos[0], $aMousePos[1], 0)
 
-	If $bRequiresReadjustment Then $oCoords.forceContainRect($iX, $iY, $iWidth, $iHeight)
-EndFunc
+;~ 	If $bRequiresReadjustment Then $oCoords.forceContainRect($iX, $iY, $iWidth, $iHeight)
+;~ EndFunc
 
 Func __HCS_LocalToWorld($oSelf, $aCoords)
 	Local $iX = ($aCoords[0] - $oSelf.originX) / $oSelf.scaleFactor

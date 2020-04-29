@@ -2,6 +2,7 @@
 
 Func _HADES_Construction_SetupTools()
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("nothing"))
+	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("clear", "_HADES_Construction_Clear_Interact"))
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("movepoint"))
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("addpoint", "_HADES_Construction_AddPoint_Interact"))
 	_ArrayAdd($__g_HADES_CONSTR_Tools, _HADES_Construction_CreateTool("circdiam", "_HADES_Construction_CircDiam_Interact"))
@@ -19,6 +20,13 @@ Func _HADES_Construction_CreateTool($sID, $fnInteract = "_HADES_Construction_Gen
 EndFunc
 
 Func _HADES_Construction_Generic_Interact($oTool, $oEnviron, $iMsg, $iClientX, $iClientY, $iWorldX, $iWorldY)
+EndFunc
+
+Func _HADES_Construction_Clear_Interact($oTool, $oEnviron, $iMsg, $iClientX, $iClientY, $iWorldX, $iWorldY)
+	If $iMsg = $WM_LBUTTONUP Then
+		$oEnviron.shapes = LinkedList()
+		$oEnviron.points = LinkedList()
+	EndIf
 EndFunc
 
 Func _HADES_Construction_AddPoint_Interact($oTool, $oEnviron, $iMsg, $iClientX, $iClientY, $iWorldX, $iWorldY)
