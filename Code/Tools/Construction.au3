@@ -3,6 +3,7 @@
 #include "Construction\Environment.au3"
 #include "Construction\Tool.au3"
 #include "Construction\Render.au3"
+#include "Construction\Shape.au3"
 
 Global $__g_HADES_CONSTR_Tools[0]
 Global $__g_HADES_CONSTR_Images[0]
@@ -14,6 +15,7 @@ Global $__g_HADES_CONSTR_PointFillOutline
 Global $__g_HADES_CONSTR_PointSelFill
 Global $__g_HADES_CONSTR_PointSelFillOutline
 Global $__g_HADES_CONSTR_LinePen
+Global $__g_HADES_CONSTR_LineGuidePen
 
 Func _HADES_Construction_Setup()
 	_HADES_Construction_SetupGfx()
@@ -42,6 +44,10 @@ Func _HADES_Construction_SetupGfx()
 	$__g_HADES_CONSTR_PointFillOutline = _GDIPlus_BrushCreateSolid(0xFF4D00B0)
 	$__g_HADES_CONSTR_PointSelFill = _GDIPlus_BrushCreateSolid(0xFF35CCFF)
 	$__g_HADES_CONSTR_PointSelFillOutline = _GDIPlus_BrushCreateSolid(0xFF9E002B)
+
+	$__g_HADES_CONSTR_LinePen = _GDIPlus_PenCreate(0xFF808080, 2)
+	$__g_HADES_CONSTR_LineGuidePen = _GDIPlus_PenCreate(0x80808080, 1)
+	_GDIPlus_PenSetDashStyle($__g_HADES_CONSTR_LineGuidePen, $GDIP_DASHSTYLEDASH)
 EndFunc
 
 Func _HADES_Construction_LoadImage($sID)
@@ -64,6 +70,9 @@ Func _HADES_Construction_Exit()
 	_GDIPlus_BrushDispose($__g_HADES_CONSTR_PointFillOutline)
 	_GDIPlus_BrushDispose($__g_HADES_CONSTR_PointSelFill)
 	_GDIPlus_BrushDispose($__g_HADES_CONSTR_PointSelFillOutline)
+
+	_GDIPlus_PenDispose($__g_HADES_CONSTR_LinePen)
+	_GDIPlus_PenDispose($__g_HADES_CONSTR_LineGuidePen)
 EndFunc
 
 Func _HADES_Tool_CGuides_Init($oTool, $oContext)

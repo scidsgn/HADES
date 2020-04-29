@@ -36,3 +36,8 @@ Func _HADES_Construction_Render($oContext)
 		_GDIPlus_GraphicsFillEllipse($hGfx, $aLocal[0] - 4, $aLocal[1] - 4, 8, 8, $__g_HADES_CONSTR_PointSelFill)
 	Next
 EndFunc
+
+Func _HADES_Construction_RenderUtil_DrawXHair($hGfx, $iX, $iY, $hPen = 0)
+	_GDIPlus_GraphicsDrawLine($hGfx, $iX - 8, $iY, $iX + 8, $iY, $hPen)
+	_GDIPlus_GraphicsDrawLine($hGfx, $iX, $iY - 8, $iX, $iY + 8, $hPen)
+EndFunc

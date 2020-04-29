@@ -35,7 +35,7 @@ Func _HADES_Construction_CircDiam_Interact($oTool, $oEnviron, $iMsg, $iClientX, 
 			$oEnviron.toolPoints.add($oPoint)
 
 			If $oEnviron.toolPoints.count() = 2 Then
-				ConsoleWrite("yeet")
+				$oEnviron.shapes.add(_HADES_Construction_CreateCircleFromDiameterPoints($oEnviron.toolPoints))
 				$oEnviron.toolPoints = 0
 				$oEnviron.toolPoints = LinkedList()
 			EndIf
