@@ -2,6 +2,7 @@
 
 #include "Tools\Test.au3"
 #include "Tools\Construction.au3"
+#include "Tools\WCAG.au3"
 
 Global $__g_HADES_ToolGroups[0]
 
@@ -18,6 +19,7 @@ EndFunc
 Func _HADES_SetupToolGroups()
 ;~ 	_HADES_Test_Setup()
 	_HADES_Construction_Setup()
+	_HADES_WCAG_Setup()
 EndFunc
 
 Func _HADES_CreateToolGroup($sID, $sName)
@@ -46,6 +48,7 @@ Func _HADES_CreateTool($sID, $sName)
 	_AutoItObject_AddProperty($oObj, "data", $ELSCOPE_PUBLIC, 0)
 
 	_AutoItObject_AddMethod($oObj, "init", "_HADES_Tool_Generic_Init")
+	_AutoItObject_AddMethod($oObj, "uninit", "_HADES_Tool_Generic_UnInit")
 	_AutoItObject_AddMethod($oObj, "interact", "_HADES_Tool_Generic_Interact")
 	_AutoItObject_AddMethod($oObj, "update", "_HADES_Tool_Generic_Update")
 	_AutoItObject_AddMethod($oObj, "render", "_HADES_Tool_Generic_Render")
@@ -59,6 +62,9 @@ EndFunc
 
 ; Placeholders
 Func _HADES_Tool_Generic_Init($oTool, $oContext)
+EndFunc
+
+Func _HADES_Tool_Generic_UnInit($oTool, $oContext)
 EndFunc
 
 Func _HADES_Tool_Generic_Interact($oTool, $oContext, $iMsg, $iClientX, $iClientY, $iWorldX, $iWorldY)

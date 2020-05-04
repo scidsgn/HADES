@@ -29,5 +29,6 @@ Func _HADES_CreateContext($oTool)
 EndFunc
 
 Func _HADES_DestroyContext($oContext)
+	$oContext.tool.uninit($oContext)
 	_HADES_DestroyViewport($oContext.viewport)
 EndFunc
