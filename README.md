@@ -8,8 +8,11 @@ Also, it's "Enrichment", not "Enhancement".
 
 ## Feature list, or rather an "idea list"
 
-HADES is still in the "proof-of-concept" stage, so its feature list could be best described as an empty set. Having a list of things that could be added is still rather nice, though:
+HADES is still in the "proof-of-concept" stage, so its feature list is not yet complete. Having a list of things that could be added is still rather nice, though:
 
-* Construction guides - a miniature version of GeoGebra within Affinity Designer
-* WCAG contrast ratio calculator
-* Nonlinear distortion, particularly free/quadrilateral distortion
+* Color-related features:
+  * ✔️ WCAG contrast ratio calculator
+  * ❌ Color harmony generator (Designer requires you to use swatches to generate color harmonies)
+  * ❌ Color blindness preview (B&W, emulating protanopia, deuteranopia, etc.)
+* ❌ Construction guides - a miniature version of GeoGebra within Affinity Designer
+* ❌ Nonlinear distortion, particularly free/quadrilateral distortion
