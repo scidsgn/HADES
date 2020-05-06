@@ -17,7 +17,6 @@ Func _HADES_GetToolGroups()
 EndFunc
 
 Func _HADES_SetupToolGroups()
-;~ 	_HADES_Test_Setup()
 	_HADES_Construction_Setup()
 	_HADES_WCAG_Setup()
 EndFunc

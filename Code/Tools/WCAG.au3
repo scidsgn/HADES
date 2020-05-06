@@ -57,6 +57,8 @@ Func _HADES_Tool_WCAG_Init($oTool, $oContext)
 
 	_AutoItObject_AddProperty($oData, "window", $ELSCOPE_PUBLIC, Int($hWCAGUI))
 
+	_AutoItObject_AddProperty($oData, "c1coords", $ELSCOPE_PUBLIC, 0)
+	_AutoItObject_AddProperty($oData, "c2coords", $ELSCOPE_PUBLIC, 0)
 	_AutoItObject_AddProperty($oData, "color1", $ELSCOPE_PUBLIC, 0xFFFFFF)
 	_AutoItObject_AddProperty($oData, "color2", $ELSCOPE_PUBLIC, 0x000000)
 
@@ -138,8 +140,10 @@ Func _HADES_Tool_WCAG_Interact($oTool, $oContext, $iMsg, $iClientX, $iClientY, $
 
 		If _IsPressed("11") Then
 			If _IsPressed("10") Then
+				$oContext.data.c2coords = _HADES_CreatePoint($iWorldX, $iWorldY)
 				$oContext.data.color2 = $iColor
 			Else
+				$oContext.data.c1coords = _HADES_CreatePoint($iWorldX, $iWorldY)
 				$oContext.data.color1 = $iColor
 			EndIf
 
@@ -149,7 +153,47 @@ Func _HADES_Tool_WCAG_Interact($oTool, $oContext, $iMsg, $iClientX, $iClientY, $
 EndFunc
 
 Func _HADES_Tool_WCAG_Update($oTool, $oContext)
+	Local $aOffset = WinGetPos(HWnd($oContext.viewport.viewportWnd))
+	Local $bUpdate = False
+
+	If IsObj($oContext.data.c1coords) Then
+		Local $aCoords = [$oContext.data.c1coords.x, $oContext.data.c1coords.y]
+		$aCoords = $oContext.coords.worldToLocal($aCoords)
+
+		Local $iColor = PixelGetColor(Floor($aOffset[0] + $aCoords[0]), Floor($aOffset[1] + $aCoords[1]))
+		If $iColor <> $oContext.data.color1 Then
+			$oContext.data.color1 = $iColor
+			$bUpdate = True
+		EndIf
+	EndIf
+	If IsObj($oContext.data.c2coords) Then
+		Local $aCoords = [$oContext.data.c2coords.x, $oContext.data.c2coords.y]
+		$aCoords = $oContext.coords.worldToLocal($aCoords)
+
+		Local $iColor = PixelGetColor(Floor($aOffset[0] + $aCoords[0]), Floor($aOffset[1] + $aCoords[1]))
+		If $iColor <> $oContext.data.color2 Then
+			$oContext.data.color2 = $iColor
+			$bUpdate = True
+		EndIf
+	EndIf
+
+	If $bUpdate Then _HADES_Tool_WCAG_UpdateUI($oContext.data)
 EndFunc
 
 Func _HADES_Tool_WCAG_Render($oTool, $oContext)
+	Local $hGfx = $oContext.viewport.graphics
+	_GDIPlus_GraphicsClear($hGfx, 0)
+
+	If IsObj($oContext.data.c1coords) Then
+		Local $aCoords = [$oContext.data.c1coords.x, $oContext.data.c1coords.y]
+		$aCoords = $oContext.coords.worldToLocal($aCoords)
+
+		_GDIPlus_GraphicsDrawEllipse($hGfx, Round($aCoords[0]) - 8, Round($aCoords[1]) - 8, 16, 16)
+	EndIf
+	If IsObj($oContext.data.c2coords) Then
+		Local $aCoords = [$oContext.data.c2coords.x, $oContext.data.c2coords.y]
+		$aCoords = $oContext.coords.worldToLocal($aCoords)
+
+		_GDIPlus_GraphicsDrawEllipse($hGfx, Round($aCoords[0]) - 8, Round($aCoords[1]) - 8, 16, 16)
+	EndIf
 EndFunc

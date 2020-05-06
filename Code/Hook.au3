@@ -17,6 +17,8 @@ Func _HADES_RegisterHook()
 
 	$__g_HADES_Hook = _WinAPI_SetWindowsHookEx($WH_MOUSE_LL, DllCallbackGetPtr($__g_HADES_HookProc), $hMod)
 
+	AdlibRegister(_HADES_ProcessAdlib, 250)
+
 	_HADES_RegisterExit(_HADES_DeregisterHook)
 EndFunc
 
@@ -32,6 +34,14 @@ Func _HADES_GetMouseMove()
 	Local $aOut = [$aPos[0] - $__g_HADES_iLastPosX, $aPos[1] - $__g_HADES_iLastPosY]
 
 	Return $aOut
+EndFunc
+
+Func _HADES_ProcessAdlib()
+	Local $oContext = _HADES_GetCurrentContext()
+
+	If IsObj($oContext) Then
+		$oContext.tool.update($oContext)
+	EndIf
 EndFunc
 
 Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
@@ -81,7 +91,6 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 					Local $aMove = _HADES_GetMouseMove()
 					$oCoords.translate($aMove[0], $aMove[1])
 
-
 					If IsObj($oContext) Then
 						$oContext.tool.update($oContext)
 						$oContext.viewport.updateUI()
@@ -104,6 +113,8 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 EndFunc
 
 Func _HADES_DeregisterHook()
+	AdlibUnRegister(_HADES_ProcessAdlib)
+
 	_WinAPI_UnhookWindowsHookEx($__g_HADES_Hook)
 	DllCallbackFree($__g_HADES_HookProc)
 EndFunc
