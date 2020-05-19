@@ -14,5 +14,6 @@ HADES is still in the "proof-of-concept" stage, so its feature list is not yet c
   * ✔️ WCAG contrast ratio calculator
   * ❌ Color harmony generator (Designer requires you to use swatches to generate color harmonies)
   * ❌ Color blindness preview (B&W, emulating protanopia, deuteranopia, etc.)
+* ❌ Lighting helper - a material preview ball within Designer
 * ❌ Construction guides - a miniature version of GeoGebra within Affinity Designer
 * ❌ Nonlinear distortion, particularly free/quadrilateral distortion
