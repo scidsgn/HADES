@@ -15,6 +15,12 @@ Global $__g_HADES_MenuBitmaps[0]
 Global Enum $HADES_MID_EXITHADES = 1000, _
 			$HADES_MID_STOPTOOL
 
+Global $__g_HADES_TrayCloseItem
+
+Func _HADES_CreateTrayMenu()
+	$__g_HADES_TrayCloseItem = TrayCreateItem("Close HADES")
+EndFunc
+
 Func _HADES_CreateMenu()
 	Local $idItem, $bFirst = True
 
@@ -90,6 +96,8 @@ Func _HADES_CreateMenu()
 	_GUICtrlMenu_SetItemSubMenu($__g_HADES_Menu, $idHadesSubmenu, $__g_HADES_AppSubMenu)
 
 	_HADES_RegisterExit(_HADES_DestroyMenu)
+
+	_HADES_CreateTrayMenu()
 EndFunc
 
 Func _HADES_CreateMenuOwnerWindow()
