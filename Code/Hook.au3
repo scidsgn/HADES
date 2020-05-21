@@ -7,15 +7,18 @@
 
 Global Const $tagMSLLHOOKSTRUCT = "long x;long y;dword mouseData;dword flags;dword time;ulong_ptr dwExtraInfo"
 
-Global $__g_HADES_Hook, $__g_HADES_HookProc
+Global $__g_HADES_MouseHook, $__g_HADES_MouseHookProc
+Global $__g_HADES_KeybHook, $__g_HADES_KeybHookProc
 
 Global $__g_HADES_iLastPosX = Null, $__g_HADES_iLastPosY = Null
 
 Func _HADES_RegisterHook()
-	$__g_HADES_HookProc = DLLCallbackRegister(_HADES_ProcessMouseHook, "long", "int;wparam;lparam")
+	$__g_HADES_MouseHookProc = DLLCallbackRegister(_HADES_ProcessMouseHook, "long", "int;wparam;lparam")
+	$__g_HADES_KeybHookProc = DLLCallbackRegister(_HADES_ProcessKeyboardHook, "long", "int;wparam;lparam")
 	$hMod = _WinAPI_GetModuleHandle(0)
 
-	$__g_HADES_Hook = _WinAPI_SetWindowsHookEx($WH_MOUSE_LL, DllCallbackGetPtr($__g_HADES_HookProc), $hMod)
+	$__g_HADES_MouseHook = _WinAPI_SetWindowsHookEx($WH_MOUSE_LL, DllCallbackGetPtr($__g_HADES_MouseHookProc), $hMod)
+	$__g_HADES_KeybHook = _WinAPI_SetWindowsHookEx($WH_KEYBOARD_LL, DllCallbackGetPtr($__g_HADES_KeybHookProc), $hMod)
 
 	AdlibRegister(_HADES_ProcessAdlib, 250)
 
@@ -44,12 +47,25 @@ Func _HADES_ProcessAdlib()
 	EndIf
 EndFunc
 
+Func _HADES_ProcessKeyboardHook($nCode, $wParam, $lParam)
+	Local $tKeybData = DllStructCreate($tagKBDLLHOOKSTRUCT, $lParam)
+
+	If $wParam = $WM_KEYUP And $tKeybData.flags = $LLKHF_UP Then
+		Local $iVKCode = $tKeybData.vkCode
+		If $iVKCode = 81 And _IsPressed("11") Then ; Ctrl+Q
+			_HADES_ShowMenu()
+		EndIf
+	EndIf
+
+	Return _WinAPI_CallNextHookEx($__g_HADES_MouseHook, $nCode, $wParam, $lParam)
+EndFunc
+
 Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 	Local $iMsg = $wParam
 	Local $tMouseData = DllStructCreate($tagMSLLHOOKSTRUCT, $lParam)
 
 ;~ 	If Not _HADES_IsAfDesignActive() Then
-;~ 		Return _WinAPI_CallNextHookEx($__g_HADES_Hook, $nCode, $wParam, $lParam)
+;~ 		Return _WinAPI_CallNextHookEx($__g_HADES_MouseHook, $nCode, $wParam, $lParam)
 ;~ 	EndIf
 	Local $hCanvasWnd = _HADES_GetAfDesignCanvasAtXY()
 	Local $oContext = _HADES_GetCurrentContext()
@@ -109,12 +125,15 @@ Func _HADES_ProcessMouseHook($nCode, $wParam, $lParam)
 	EndIf
 
 	_HADES_UpdateMousePos()
-	Return _WinAPI_CallNextHookEx($__g_HADES_Hook, $nCode, $wParam, $lParam)
+	Return _WinAPI_CallNextHookEx($__g_HADES_MouseHook, $nCode, $wParam, $lParam)
 EndFunc
 
 Func _HADES_DeregisterHook()
 	AdlibUnRegister(_HADES_ProcessAdlib)
 
-	_WinAPI_UnhookWindowsHookEx($__g_HADES_Hook)
-	DllCallbackFree($__g_HADES_HookProc)
+	_WinAPI_UnhookWindowsHookEx($__g_HADES_MouseHook)
+	DllCallbackFree($__g_HADES_MouseHookProc)
+
+	_WinAPI_UnhookWindowsHookEx($__g_HADES_KeybHook)
+	DllCallbackFree($__g_HADES_KeybHookProc)
 EndFunc

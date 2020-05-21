@@ -35,8 +35,6 @@ Func _HADES_Startup()
 	_HADES_SetupToolGroups()
 	_HADES_CreateMenu()
 
-	HotKeySet("^q", _HADES_ShowMenu)
-
 	While 1
 		_HADES_AfDesignLocate()
 		Sleep(10)

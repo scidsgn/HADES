@@ -24,6 +24,7 @@ Func _HADES_CreateMenu()
 	$__g_HADES_MenuStopToolID = _GUICtrlMenu_AddMenuItem($__g_HADES_Menu, "Stop current HADES tool", $HADES_MID_STOPTOOL)
 	_GUICtrlMenu_SetItemBmp($__g_HADES_Menu, $__g_HADES_MenuStopToolID, _HADES_LoadMenuBitmap("stopcurrent"))
 
+#cs Not implemented in the slightest
 	Local $idCoordsSubmenu = _GUICtrlMenu_AddMenuItem($__g_HADES_Menu, "Coordinate space")
 	_GUICtrlMenu_SetItemBmp($__g_HADES_Menu, $idCoordsSubmenu, _HADES_LoadMenuBitmap("coords"))
 	$__g_HADES_CoordsSubMenu = _GUICtrlMenu_CreateMenu()
@@ -35,6 +36,7 @@ Func _HADES_CreateMenu()
 	_GUICtrlMenu_SetItemBmp($__g_HADES_CoordsSubMenu, $idItem, _HADES_LoadMenuBitmap("resetxy"))
 
 	_GUICtrlMenu_SetItemSubMenu($__g_HADES_Menu, $idCoordsSubmenu, $__g_HADES_CoordsSubMenu)
+#ce
 
 	_GUICtrlMenu_AddMenuItem($__g_HADES_Menu, "")
 
@@ -74,9 +76,9 @@ Func _HADES_CreateMenu()
 	_GUICtrlMenu_SetItemBmp($__g_HADES_Menu, $idHadesSubmenu, _HADES_LoadMenuBitmap("hades"))
 	$__g_HADES_AppSubMenu = _GUICtrlMenu_CreateMenu()
 
-	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_AppSubMenu, "HADES v" & $HADES_VERSION)
+	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_AppSubMenu, "HADES " & $HADES_VERSION)
 	_GUICtrlMenu_SetItemDisabled($__g_HADES_AppSubMenu, $idItem)
-	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_AppSubMenu, "(h)Affinity Designer Enhancement Suite")
+	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_AppSubMenu, "(h)Affinity Designer Enrichment Suite")
 	_GUICtrlMenu_SetItemDisabled($__g_HADES_AppSubMenu, $idItem)
 	$idItem = _GUICtrlMenu_AddMenuItem($__g_HADES_AppSubMenu, "by sci")
 	_GUICtrlMenu_SetItemDisabled($__g_HADES_AppSubMenu, $idItem)
